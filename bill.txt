@@ -1,0 +1,10 @@
+ Dim pa As Integer
+        ds.Clear()
+
+        getdata("select * from cart_tbl where product_name='" & Button47.Text & "'")
+
+        filldata("update cart_tbl set qty=" & txtqty.Text & " where product_name='" & Button47.Text & "'")
+        pa = CInt(txtqty.Text * txtprice.Text)
+        filldata("update cart_tbl set payebal_tbl=" & pa & " where product_name='" & Button47.Text & "'")
+        ds.Clear()
+        getdata("select * from cart_tbl")

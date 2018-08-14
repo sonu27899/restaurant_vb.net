@@ -1,0 +1,97 @@
+Imports System.Data
+Imports System.Data.OleDb
+Public Class loginpage
+    Dim cnn As New OleDbConnection
+    Dim cmd As New OleDbCommand
+    Dim da As New OleDbDataAdapter
+    Dim ds As New DataSet
+    Dim dt As DataTable
+    Dim i As Integer = 0
+    Private Sub getdata()
+        cnn.ConnectionString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Helly\csaproject\rest.accdb"
+        cmd.Connection = cnn
+        cmd.CommandText = "select * from login_tbl"
+        da.SelectCommand = cmd
+        da.Fill(ds)
+        dt = ds.Tables(0)
+    End Sub
+    Private Sub filldata(ByVal q As String)
+        cnn.ConnectionString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Helly\csaproject\rest.accdb"
+        cmd.Connection = cnn
+        cmd.CommandText = q
+        cnn.Open()
+        cmd.ExecuteNonQuery()
+        cnn.Close()
+    End Sub
+    Private Sub display(ByVal i As Integer)
+        TextBox1.Text = dt.Rows(i)("Loginid").ToString
+        TextBox2.Text = dt.Rows(i)("Password").ToString
+    End Sub
+
+
+    Dim str(5) As String
+
+    Private Sub loginpage_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Timer1.Enabled = True
+        str(0) = "C:\Helly\csaproject\images of login\chinese.jpeg"
+        str(1) = "C:\Helly\csaproject\images of login\cocktails1.jpg"
+        str(2) = "C:\Helly\csaproject\images of login\dosa.jpg"
+        str(3) = "C:\Helly\csaproject\images of login\ice-cream.jpg"
+        str(4) = "C:\Helly\csaproject\images of login\pizza.jpeg"
+        str(5) = "C:\Helly\csaproject\images of login\shakes.jpg"
+        PictureBox1.Image = Image.FromFile(str(0))
+    End Sub
+    Dim j As Integer
+    Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
+        ' For j = 0 To 4
+        If j < 6 Then
+            PictureBox1.Image = Image.FromFile(str(j))
+            j = j + 1
+        Else
+            j = 0
+        End If
+        'Next
+    End Sub
+
+    Private Sub btnlogin_Click(sender As Object, e As EventArgs) Handles btnlogin.Click
+        Dim n As String = ""
+        Dim p As String = ""
+
+        If TextBox1.Text <> "" And TextBox2.Text <> "" Then
+            cnn.ConnectionString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Helly\csaproject\rest.accdb"
+            cmd.Connection = cnn
+            cmd.CommandText = "select * from signup_tbl where User_name='" & TextBox1.Text & "'"
+            ds.Clear()
+            da.SelectCommand = cmd
+            da.Fill(ds)
+            dt = ds.Tables(0)
+
+            If dt.Rows.Count > 0 Then
+                n = dt.Rows(0)(1)
+                p = dt.Rows(0)(4)
+                If n = TextBox1.Text And p = TextBox2.Text Then
+                    MsgBox("You are succesful logged in")
+                    backup.Tag = n
+                    backup.Show()
+                    Me.Hide()
+                    TextBox1.Clear()
+                    TextBox2.Clear()
+                Else
+                    MsgBox("Please Enter Correct Username and Password")
+                End If
+            Else
+                MsgBox("record doesnot exist")
+            End If
+        End If
+    End Sub
+
+    Private Sub LinkLabel1_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel1.LinkClicked
+        forgetpwd.Show()
+        Me.Hide()
+    End Sub
+
+    Private Sub lblreg_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles lblreg.LinkClicked
+        signup.Show()
+        Me.Hide()
+    End Sub
+End Class
